@@ -55,7 +55,7 @@ rules:
   max-depth: error
   max-len:
     - error
-    - code: 80
+    - code: 180
       tabWidth: 2
       ignoreRegExpLiterals: false
       ignoreStrings: true
