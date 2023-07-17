@@ -62,12 +62,12 @@ while (true) {
   prompt(`The result is ${output}`);
 
   prompt(`Would you like to make another calculation?`)
-  let answer = readline.question().toLowerCase();
+  let anotherCalc = readline.question().toLowerCase();
 
-  while (answer[0] !== 'y' && answer[0] !== 'n') {
+  while (anotherCalc[0] !== 'y' && anotherCalc[0] !== 'n') {
     prompt(`Please enter 'y' or 'n'.`);
     answer = readline.question().toLowerCase();
   }
 
-  if (answer[0] === 'n') break;
+  if (anotherCalc[0] === 'n') break;
 }
