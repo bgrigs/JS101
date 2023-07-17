@@ -4,6 +4,8 @@
 // Ask the user for the operation they'd like to peform
 // Perform the operation
 // Display the result
+const MESSAGES = require('./calculator_messages.json');
+
 
 const readline = require('readline-sync');
 
@@ -16,30 +18,29 @@ function invalidNumber(num) {
 }
 
 while (true) {
-  prompt('Welcome to the Calculator');
+  prompt(MESSAGES['welcome']);
 
-  prompt('What is the first number?');
+  prompt(MESSAGES['firstNumber']);
   let number1 = readline.question();
 
   while (invalidNumber(number1)) {
-    prompt('Hmmm...that doesn\'t look like a valid number.');
+    prompt(MESSAGES['invalidNumber']);
     number1 = readline.question();
   }
 
-  prompt('What is the second number?');
+  prompt(MESSAGES['secondNumber']);
   let number2 = readline.question();
 
   while (invalidNumber(number2)) {
-    prompt('Hmmm...that doesn\'t look like a valid number.');
+    prompt(MESSAGES['invalidNumber']);
     number2 = readline.question();
   }
 
-  prompt(`What operation would you like to peform?
-  1) Add 2) Subtract 3) Multiply 4) Divide`);
+  prompt(MESSAGES['selectOperation']);
   let operation = readline.question();
 
   while (!['1' , '2', '3', '4'].includes(operation)) {
-    prompt('Must choose 1, 2, 3, or 4.');
+    prompt(MESSAGES['invalidOperation']);
     operation = readline.question();
   }
 
@@ -59,13 +60,13 @@ while (true) {
       break;
   }
 
-  prompt(`The result is ${output}`);
+  prompt(`${MESSAGES['result']} ${output}`);
 
-  prompt(`Would you like to make another calculation?`);
+  prompt(MESSAGES['goAgain']);
   let anotherCalc = readline.question().toLowerCase();
 
   while (anotherCalc[0] !== 'y' && anotherCalc[0] !== 'n') {
-    prompt(`Please enter 'y' or 'n'.`);
+    prompt(MESSAGES['invalidAnswer']);
     anotherCalc = readline.question().toLowerCase();
   }
 
