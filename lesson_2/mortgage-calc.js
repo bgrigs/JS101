@@ -195,10 +195,7 @@ function calcPromo() {
   (1 - Math.pow((1 + promoMonthlyIntRate), (-promoDurationMonths))));
 
   getInterestRate();
-
-  if (Number(standardIntRate) !== 0) {
-    displayMonthlyPromoPayment();
-  }
+  displayMonthlyPromoPayment();
 }
 
 function displayMonthlyPromoPayment() {
