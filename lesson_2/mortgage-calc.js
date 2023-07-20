@@ -1,37 +1,3 @@
-/*
-PRINT a welcome msg to the user
-
-GET
---loanAmount
---yearDuration (loan duration in years)
---are they paying interest?
-  --IF 'n', noInterest()
-  --IF 'y', ask:
-    --Does your loan include a promotional interest rate?
-      --IF 'n', getInterest();
-        --IF user inputs 0, noInterest()
-        --ELSE user inputs a valid number calcInterest()
-      --IF 'y',
-        --What is your promotional interest rate?
-          --GET promoRate
-        --What is the length of your promotional interest rate in months?
-        --GET promoMonths
-        --calcPromoIntRate
-
-Declare variable apr, calculating interestRate / 100
-Declare variable monthlyIntRate, calculate based on apr / 12
-Declare variable monthDuration (loan duration in years),
-^calculate based on yearDuration * 12
-
-Calculate monthly loan payment using formula:
-let m = p * (j / (1 - Math.pow((1 + j), (-n))));
-
-let monthlyPayment = loanAmount * (monthlyIntRate /
-(1 - Math.pow((1 + monthlyIntRate), (-monthDuration))))
-
-PRINT monthly payment
-*/
-
 const readline = require('readline-sync');
 
 let monthlyPayment;
@@ -102,6 +68,9 @@ if (promoAnswer === 'n') {
 } else if (promoAnswer === 'y') {
   getPromoRate();
   getPromoDuration();
+  calcPromo();
+  displayMonthlyPromoPayment();
+  displayMonthlyPayAfterPromo();
 }
 
 function calcNoInterest() {
@@ -124,7 +93,7 @@ function askPromo() {
 }
 
 function getInterestRate() {
-  console.log('What is your stardard interest rate?');
+  console.log('What is your standard interest rate?');
   console.log('If 5% write 5, if 10%, write 10');
   standardIntRate = readline.prompt();
   validateStandardInt();
@@ -158,8 +127,14 @@ function getPromoRate() {
   validatePromoRate();
 }
 
+function invalidPromoRate(num) {
+  return num.trimStart() === '' ||
+  Number.isNaN(Number(num)) ||
+  Number(num) < 0;
+}
+
 function validatePromoRate() {
-  while (invalidNumber(promoRate)) {
+  while (invalidPromoRate(promoRate)) {
     console.log(invalidNumberMessage);
     promoRate = readline.prompt();
   }
@@ -181,8 +156,6 @@ function validatePromoDuration() {
     console.log('Please enter a positive number of 1 or greater.');
     promoDurationMonths = readline.prompt();
   }
-
-  calcPromo();
 }
 
 function calcPromo() {
@@ -191,24 +164,24 @@ function calcPromo() {
 
   let promoLoanAmount = (Number(loanAmount) / monthDuration) * Number(promoDurationMonths);
 
-  promoMonthlyPayment = Number(promoLoanAmount) * (promoMonthlyIntRate /
+  if (Number(promoRate) === 0) {
+    promoMonthlyPayment = Number(promoLoanAmount) / Number(promoDurationMonths);
+  } else {
+    promoMonthlyPayment = Number(promoLoanAmount) * (promoMonthlyIntRate /
   (1 - Math.pow((1 + promoMonthlyIntRate), (-promoDurationMonths))));
+  }
 
   getInterestRate();
-  displayMonthlyPromoPayment();
 }
 
 function displayMonthlyPromoPayment() {
   console.log(`During your promotional period, you will owe $${promoMonthlyPayment.toFixed(2)} for ${promoDurationMonths} months.`);
-
-  displayMonthlyPayAfterPromo();
 }
 
 function displayMonthlyPayAfterPromo() {
   console.log(`After the promotional period, you will owe $${monthlyPayment.toFixed(2)} for ${monthDuration - promoDurationMonths} months.`);
 }
 
-//After going through material again:
-// allow for promoRate of 0
+// Ideas for improvement:
 // option to do another calculation?
-
+// how to best refactor, have fewer global variables, etc
