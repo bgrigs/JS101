@@ -1,11 +1,13 @@
 {
-  "welcome" : "Welcome to the Calculator",
-  "firstNumber" : "What is the first number?",
-  "secondNumber" : "What is the second number?",
-  "invalidNumber" : "Hmmm...that doesn't look like a valid number.",
-  "selectOperation" : "What operation would you like to peform? \n1) Add 2) Subtract 3) Multiply 4) Divide",
-  "invalidOperation" : "Must choose 1, 2, 3, or 4.",
-  "result" : "The result is",
-  "goAgain" : "Would you like to make another calculation?",
-  "invalidAnswer" : "Please enter 'y' or 'n'."
+  "en": {
+    "welcome" : "Welcome to the Calculator",
+    "firstNumber" : "What is the first number?",
+    "secondNumber" : "What is the second number?",
+    "invalidNumber" : "Hmmm...that doesn't look like a valid number.",
+    "selectOperation" : "What operation would you like to peform? \n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "invalidOperation" : "Must choose 1, 2, 3, or 4.",
+    "result" : "The result is ",
+    "goAgain" : "Would you like to make another calculation?",
+    "invalidAnswer" : "Please enter 'y' or 'n'."
+  }
 }
