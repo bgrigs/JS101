@@ -34,11 +34,27 @@ PRINT monthly payment
 
 const readline = require('readline-sync');
 
+let monthlyPayment;
+let noIntMonthlyPayment;
+let standardIntRate;
+let annualIntRate;
+let monthlyIntRate;
+
+let promoAnswer;
+let promoMonthlyPayment;
+let promoRate;
+let promoAnnualIntRate;
+let promoMonthlyIntRate;
+let promoDurationMonths;
+
 function invalidNumber(num) {
   return num.trimStart() === '' ||
   Number.isNaN(Number(num)) ||
   Number(num) < 0;
 }
+
+let invalidNumberMessage = 'Please enter a positive number.';
+let invalidAnswerMessage = `Invalid Answer. Enter 'y' for yes and 'n' for no.`;
 
 function invalidAnswer(answer) {
   return answer !== 'y' && answer !== 'n';
@@ -50,17 +66,16 @@ console.log('How much is your loan?');
 let loanAmount = readline.prompt();
 
 while (invalidNumber(loanAmount)) {
-  console.log('Please enter a positive number.');
+  console.log(invalidNumberMessage);
   loanAmount = readline.prompt();
 }
 
-console.log('What is the duration of your loan in years?');
+console.log('What is the duration of your loan in YEARS?');
 let yearDuration = readline.prompt();
 let monthDuration = Number(yearDuration) * 12;
 
-
 while (invalidNumber(yearDuration)) {
-  console.log('Please enter a positive number.');
+  console.log(invalidNumberMessage);
   yearDuration = readline.prompt();
 }
 
@@ -69,79 +84,145 @@ console.log(`Enter 'y' for yes and 'n' for no.`);
 let isInterest = readline.prompt().toLowerCase();
 
 while (invalidAnswer(isInterest)) {
-  invalidAnswerReply();
+  console.log(invalidAnswerMessage);
   isInterest = readline.prompt().toLowerCase();
 }
 
-function invalidAnswerReply() {
-  console.log(`Invalid Answer. Enter 'y' for yes and 'n' for no.`);
-}
-
-let monthlyPayment;
-let noIntMonthlyPayment;
-let promoAnswer;
-
 if (isInterest === 'n') {
-  noInterest();
+  calcNoInterest();
+  displayNoIntPayment();
 } else if (isInterest === 'y') {
   askPromo();
 }
 
-function noInterest() {
+if (promoAnswer === 'n') {
+  getInterestRate();
+  displayMonthlyIntPayment();
+} else if (promoAnswer === 'y') {
+  getPromoRate();
+  getPromoDuration();
+}
+
+function calcNoInterest() {
   noIntMonthlyPayment = (Number(loanAmount) / monthDuration).toFixed(2);
+}
+
+function displayNoIntPayment() {
   console.log(`You will owe $${noIntMonthlyPayment} for ${monthDuration} months.`);
 }
 
 function askPromo() {
-  console.log('Does your loan include a promotional interest rate?');
+  console.log('Does your loan include a promotional interest period? ');
+  console.log(`Enter 'y' for yes and 'n' for no.`);
   promoAnswer = readline.prompt().toLowerCase();
+
   while (invalidAnswer(promoAnswer)) {
-    invalidAnswerReply();
+    console.log(invalidAnswerMessage);
     promoAnswer = readline.prompt().toLowerCase();
   }
 }
 
-let interestRate;
-let apr;
-let monthlyIntRate;
-
-if (promoAnswer === 'n') {
-  getInterest();
-} else if (promoAnswer === 'y') {
-  console.log('This calculator does not support promotional interest rates at this time. Goodbye.');
+function getInterestRate() {
+  console.log('What is your stardard interest rate?');
+  console.log('If 5% write 5, if 10%, write 10');
+  standardIntRate = readline.prompt();
+  validateStandardInt();
 }
 
-function getInterest() {
-  console.log('What is your interest rate?');
-  console.log('If 5% write 5, if 10%, write 10');
-  interestRate = readline.prompt();
-
-  while (invalidNumber(interestRate)) {
-    console.log('Please enter a positive number.');
-    interestRate = readline.prompt();
+function validateStandardInt() {
+  while (invalidNumber(standardIntRate)) {
+    console.log(invalidNumberMessage);
+    standardIntRate = readline.prompt();
   }
 
-  if (Number(interestRate) === 0) {
-    noInterest();
-    console.log(`You selected an interest rate of 0. If you'd like to calculate a loan with interest, please start over and select an interest rate greater than 0.`);
+  if (zeroStandardInt(standardIntRate)) {
+    zeroIntWarning();
   } else {
     calcInterest();
   }
 }
 
+function zeroStandardInt(rate) {
+  return Number(rate) === 0;
+}
+
+function zeroIntWarning() {
+  console.log(`You selected a standard interest rate of 0. If you'd like to calculate a loan with interest, please start over and select a standard interest rate greater than 0.`);
+}
+
 function calcInterest() {
-  apr = Number(interestRate) / 100;
-  monthlyIntRate = apr / 12;
+  annualIntRate = Number(standardIntRate) / 100;
+  monthlyIntRate = annualIntRate / 12;
 
   monthlyPayment = Number(loanAmount) * (monthlyIntRate /
   (1 - Math.pow((1 + monthlyIntRate), (-monthDuration))));
-  displayInterest();
 }
 
-function displayInterest() {
+function displayMonthlyIntPayment() {
   console.log(`You will owe $${monthlyPayment.toFixed(2)} for ${monthDuration} months.`);
 }
 
+function getPromoRate() {
+  console.log('What is the promotional rate?');
+  console.log('If 5% write 5, if 10%, write 10');
+  promoRate = readline.prompt();
+  validatePromoRate();
+}
+
+function validatePromoRate() {
+  while (invalidNumber(promoRate)) {
+    console.log(invalidNumberMessage);
+    promoRate = readline.prompt();
+  }
+}
+
+function getPromoDuration() {
+  console.log('What is the length of the promotional period in MONTHS?');
+  promoDurationMonths = readline.prompt();
+
+  validatePromoDuration();
+}
+
+function invalidPromoDuration(num) {
+  return Number(num) <= 0;
+}
+
+function validatePromoDuration() {
+  while (invalidPromoDuration(promoDurationMonths) || invalidNumber(promoDurationMonths)) {
+    console.log('Please enter a positive number of 1 or greater.');
+    promoDurationMonths = readline.prompt();
+  }
+
+  calcPromo();
+}
+
+function calcPromo() {
+  promoAnnualIntRate = Number(promoRate) / 100;
+  promoMonthlyIntRate = promoAnnualIntRate / 12;
+
+  let promoLoanAmount = (Number(loanAmount) / monthDuration) * Number(promoDurationMonths);
+
+  promoMonthlyPayment = Number(promoLoanAmount) * (promoMonthlyIntRate /
+  (1 - Math.pow((1 + promoMonthlyIntRate), (-promoDurationMonths))));
+
+  getInterestRate();
+
+  if (Number(standardIntRate) !== 0) {
+    displayMonthlyPromoPayment();
+  }
+}
+
+function displayMonthlyPromoPayment() {
+  console.log(`During your promotional period, you will owe $${promoMonthlyPayment.toFixed(2)} for ${promoDurationMonths} months.`);
+
+  displayMonthlyPayAfterPromo();
+}
+
+function displayMonthlyPayAfterPromo() {
+  console.log(`After the promotional period, you will owe $${monthlyPayment.toFixed(2)} for ${monthDuration - promoDurationMonths} months.`);
+}
+
 //After going through material again:
-// add in promo period etc
-//break getInterest() into 2-3 functions?
+// allow for promoRate of 0
+// option to do another calculation?
+
