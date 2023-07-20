@@ -50,10 +50,10 @@ let promoDurationMonths;
 function invalidNumber(num) {
   return num.trimStart() === '' ||
   Number.isNaN(Number(num)) ||
-  Number(num) < 0;
+  Number(num) <= 0;
 }
 
-let invalidNumberMessage = 'Please enter a positive number.';
+let invalidNumberMessage = 'Please enter a positive number greater than zero.';
 let invalidAnswerMessage = `Invalid Answer. Enter 'y' for yes and 'n' for no.`;
 
 function invalidAnswer(answer) {
@@ -77,6 +77,7 @@ let monthDuration = Number(yearDuration) * 12;
 while (invalidNumber(yearDuration)) {
   console.log(invalidNumberMessage);
   yearDuration = readline.prompt();
+  monthDuration = Number(yearDuration) * 12;
 }
 
 console.log('Will you be paying interest on this loan?');
@@ -135,19 +136,7 @@ function validateStandardInt() {
     standardIntRate = readline.prompt();
   }
 
-  if (zeroStandardInt(standardIntRate)) {
-    zeroIntWarning();
-  } else {
-    calcInterest();
-  }
-}
-
-function zeroStandardInt(rate) {
-  return Number(rate) === 0;
-}
-
-function zeroIntWarning() {
-  console.log(`You selected a standard interest rate of 0. If you'd like to calculate a loan with interest, please start over and select a standard interest rate greater than 0.`);
+  calcInterest();
 }
 
 function calcInterest() {
