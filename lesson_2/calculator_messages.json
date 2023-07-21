@@ -7,7 +7,7 @@
     "selectOperation" : "What operation would you like to peform? \n1) Add 2) Subtract 3) Multiply 4) Divide",
     "invalidOperation" : "Must choose 1, 2, 3, or 4.",
     "result" : "The result is ",
-    "goAgain" : "Would you like to make another calculation?",
+    "goAgain" : "Would you like to make another calculation? Please enter 'y' or 'n'.",
     "invalidAnswer" : "Please enter 'y' or 'n'."
   }
 }

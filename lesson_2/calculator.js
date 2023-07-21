@@ -66,10 +66,14 @@ while (true) {
   prompt('goAgain');
   let anotherCalc = readline.question().toLowerCase();
 
-  while (anotherCalc[0] !== 'y' && anotherCalc[0] !== 'n') {
+  while (anotherCalc !== 'y' && anotherCalc !== 'n') {
     prompt('invalidAnswer');
     anotherCalc = readline.question().toLowerCase();
   }
 
-  if (anotherCalc[0] === 'n') break;
+  if (anotherCalc[0] === 'n') {
+    break;
+  } else {
+    console.clear();
+  }
 }
