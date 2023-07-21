@@ -31,35 +31,55 @@ function invalidAnswer(answer) {
   return answer !== 'y' && answer !== 'n';
 }
 
-console.log('Welcome to the Mortgage Calculator');
+while (true) {
+  console.log('Welcome to the Mortgage Calculator');
 
-console.log('How much is your loan?');
-let loanAmount = readline.prompt();
+  console.log('How much is your loan?');
+  let loanAmount = readline.prompt();
 
-while (invalidNumber(loanAmount)) {
-  console.log(invalidNumberMessage);
-  loanAmount = readline.prompt();
-}
+  while (invalidNumber(loanAmount)) {
+    console.log(invalidNumberMessage);
+    loanAmount = readline.prompt();
+  }
 
-console.log('What is the duration of your loan in MONTHS?');
-let monthDuration = readline.prompt();
+  console.log('What is the duration of your loan in MONTHS?');
+  let monthDuration = readline.prompt();
 
-while (invalidNumber(monthDuration)) {
-  console.log(invalidNumberMessage);
-  monthDuration = readline.prompt();
-}
+  while (invalidNumber(monthDuration)) {
+    console.log(invalidNumberMessage);
+    monthDuration = readline.prompt();
+  }
 
-askPromo();
+  askPromo();
 
-if (promoAnswer === 'n') {
-  getInterestRate();
-  displayMonthlyIntPayment();
-} else if (promoAnswer === 'y') {
-  getPromoRate();
-  getPromoDuration();
-  calcPromo();
-  displayMonthlyPromoPayment();
-  displayMonthlyPayAfterPromo();
+  if (promoAnswer === 'n') {
+    getInterestRate();
+    calcInterest(loanAmount, monthDuration);
+    displayMonthlyIntPayment(monthDuration);
+  } else if (promoAnswer === 'y') {
+    getPromoRate();
+    getPromoDuration();
+    getInterestRate();
+    calcInterest(loanAmount, monthDuration);
+    calcPromo(loanAmount, monthDuration);
+    displayMonthlyPromoPayment();
+    displayMonthlyPayAfterPromo(monthDuration);
+  }
+
+  console.log('\nWould you like to make another loan calculation?');
+  console.log(`Enter 'y' for yes and 'n' for no.`);
+  let runAgainAnswer = readline.prompt().toLowerCase();
+
+  while (invalidAnswer(runAgainAnswer)) {
+    console.log(invalidAnswerMessage);
+    runAgainAnswer = readline.prompt().toLowerCase();
+  }
+
+  if (runAgainAnswer === 'n') {
+    break;
+  } else {
+    console.clear();
+  }
 }
 
 function askPromo() {
@@ -85,24 +105,22 @@ function validateStandardInt() {
     console.log(invalidNumberMessage);
     standardIntRate = readline.prompt();
   }
-
-  calcInterest();
 }
 
-function calcInterest() {
+function calcInterest(loan, months) {
   annualIntRate = Number(standardIntRate) / 100;
   monthlyIntRate = annualIntRate / 12;
 
   if (Number(standardIntRate) === 0) {
-    monthlyPayment = Number(loanAmount) / Number(monthDuration);
+    monthlyPayment = Number(loan) / Number(months);
   } else {
-    monthlyPayment = Number(loanAmount) * (monthlyIntRate /
-    (1 - Math.pow((1 + monthlyIntRate), (-Number(monthDuration)))));
+    monthlyPayment = Number(loan) * (monthlyIntRate /
+    (1 - Math.pow((1 + monthlyIntRate), (-Number(months)))));
   }
 }
 
-function displayMonthlyIntPayment() {
-  console.log(`You will owe $${monthlyPayment.toFixed(2)} for ${monthDuration} months.`);
+function displayMonthlyIntPayment(duration) {
+  console.log(`You will owe $${monthlyPayment.toFixed(2)} for ${duration} months.`);
 }
 
 function getPromoRate() {
@@ -133,11 +151,11 @@ function validatePromoDuration() {
   }
 }
 
-function calcPromo() {
+function calcPromo(loan, months) {
   promoAnnualIntRate = Number(promoRate) / 100;
   promoMonthlyIntRate = promoAnnualIntRate / 12;
 
-  let promoLoanAmount = (Number(loanAmount) / Number(monthDuration)) * Number(promoDurationMonths);
+  let promoLoanAmount = (Number(loan) / Number(months)) * Number(promoDurationMonths);
 
   if (Number(promoRate) === 0) {
     promoMonthlyPayment = Number(promoLoanAmount) / Number(promoDurationMonths);
@@ -145,18 +163,15 @@ function calcPromo() {
     promoMonthlyPayment = Number(promoLoanAmount) * (promoMonthlyIntRate /
   (1 - Math.pow((1 + promoMonthlyIntRate), (-promoDurationMonths))));
   }
-
-  getInterestRate();
 }
 
 function displayMonthlyPromoPayment() {
   console.log(`During your promotional period, you will owe $${promoMonthlyPayment.toFixed(2)} for ${promoDurationMonths} months.`);
 }
 
-function displayMonthlyPayAfterPromo() {
-  console.log(`After the promotional period, you will owe $${monthlyPayment.toFixed(2)} for ${Number(monthDuration) - promoDurationMonths} months.`);
+function displayMonthlyPayAfterPromo(months) {
+  console.log(`After the promotional period, you will owe $${monthlyPayment.toFixed(2)} for ${Number(months) - promoDurationMonths} months.`);
 }
 
 // Ideas for improvement:
-// option to do another calculation?
-// how to best refactor, have fewer global variables, etc
+// refactor, reduce # of global variables, etc
