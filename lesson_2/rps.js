@@ -43,12 +43,14 @@ while (playGame) {
   prompt('Would you like to play again? (y/n)');
   let answer = readline.question().toLowerCase();
 
-  while (answer[0] !== 'y' && answer !== 'n') {
+  while (answer !== 'y' && answer !== 'n') {
     prompt(`Please enter 'y' or 'n'.`);
     answer = readline.question().toLowerCase();
   }
 
-  if (answer[0] !== 'y') {
+  if (answer !== 'y') {
     playGame = false;
+  } else {
+    console.clear();
   }
 }
