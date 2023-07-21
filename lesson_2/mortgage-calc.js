@@ -84,6 +84,10 @@ function askPromo() {
   console.log(`Enter 'y' for yes and 'n' for no.`);
   promoAnswer = readline.prompt().toLowerCase();
 
+  validatePromo();
+}
+
+function validatePromo() {
   while (invalidAnswer(promoAnswer)) {
     console.log(invalidAnswerMessage);
     promoAnswer = readline.prompt().toLowerCase();
