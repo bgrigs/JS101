@@ -2,13 +2,11 @@ const readline = require('readline-sync');
 
 let monthlyPayment;
 let standardIntRate;
-let annualIntRate;
 let monthlyIntRate;
 
 let promoAnswer;
 let promoMonthlyPayment;
 let promoRate;
-let promoAnnualIntRate;
 let promoMonthlyIntRate;
 let promoDurationMonths;
 
@@ -59,6 +57,7 @@ while (true) {
   } else if (promoAnswer === 'y') {
     getPromoRate();
     getPromoDuration();
+    validatePromoDuration(monthDuration);
     getInterestRate();
     calcInterest(loanAmount, monthDuration);
     calcPromo(loanAmount, monthDuration);
@@ -108,7 +107,7 @@ function validateStandardInt() {
 }
 
 function calcInterest(loan, months) {
-  annualIntRate = Number(standardIntRate) / 100;
+  let annualIntRate = Number(standardIntRate) / 100;
   monthlyIntRate = annualIntRate / 12;
 
   if (Number(standardIntRate) === 0) {
@@ -140,19 +139,22 @@ function validatePromoRate() {
 function getPromoDuration() {
   console.log('What is the length of the promotional period in MONTHS?');
   promoDurationMonths = readline.prompt();
-
-  validatePromoDuration();
 }
 
-function validatePromoDuration() {
+function validatePromoDuration(totalMonthDuration) {
   while (invalidNumber(promoDurationMonths)) {
     console.log('Please enter a positive number of 1 or greater.');
+    promoDurationMonths = readline.prompt();
+  }
+
+  while (Number(promoDurationMonths) > totalMonthDuration) {
+    console.log('Promo duration length cannot be greater than the total loan duration. Please enter a positve number of 1 or greater (but less than the full loan duration).');
     promoDurationMonths = readline.prompt();
   }
 }
 
 function calcPromo(loan, months) {
-  promoAnnualIntRate = Number(promoRate) / 100;
+  let promoAnnualIntRate = Number(promoRate) / 100;
   promoMonthlyIntRate = promoAnnualIntRate / 12;
 
   let promoLoanAmount = (Number(loan) / Number(months)) * Number(promoDurationMonths);
@@ -175,3 +177,4 @@ function displayMonthlyPayAfterPromo(months) {
 
 // Ideas for improvement:
 // refactor, reduce # of global variables, etc
+// is displayMonthlyPayAfterPromo() correct? does it need to be adjusted to reflect the amount paid during the promo period?
