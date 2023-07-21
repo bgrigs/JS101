@@ -2,11 +2,16 @@ const readline = require('readline-sync');
 
 let monthlyPayment;
 let standardIntRate;
-
 let promoAnswer;
 let promoMonthlyPayment;
 let promoRate;
 let promoDurationMonths;
+
+let invalidNumberMsg = 'Please enter a positive number greater than zero.';
+let invalidAnswerWarning = 'Invalid Answer.';
+let invalidAnswerMsg = `Enter 'y' for yes and 'n' for no.`;
+let interestRateMsg = 'If 5% write 5, if 10%, write 10';
+let oneOrGreaterMsg = 'Please enter a positive number of 1 or greater';
 
 function invalidNumber(num) {
   return num.trimStart() === '' ||
@@ -20,9 +25,6 @@ function invalidIntRate(num) {
   Number(num) < 0;
 }
 
-let invalidNumberMessage = 'Please enter a positive number greater than zero.';
-let invalidAnswerMessage = `Invalid Answer. Enter 'y' for yes and 'n' for no.`;
-
 function invalidAnswer(answer) {
   return answer !== 'y' && answer !== 'n';
 }
@@ -34,7 +36,7 @@ while (true) {
   let loanAmount = readline.prompt();
 
   while (invalidNumber(loanAmount)) {
-    console.log(invalidNumberMessage);
+    console.log(invalidNumberMsg);
     loanAmount = readline.prompt();
   }
 
@@ -42,7 +44,7 @@ while (true) {
   let monthDuration = readline.prompt();
 
   while (invalidNumber(monthDuration)) {
-    console.log(invalidNumberMessage);
+    console.log(invalidNumberMsg);
     monthDuration = readline.prompt();
   }
 
@@ -64,11 +66,11 @@ while (true) {
   }
 
   console.log('\nWould you like to make another loan calculation?');
-  console.log(`Enter 'y' for yes and 'n' for no.`);
+  console.log(invalidAnswerMsg);
   let runAgainAnswer = readline.prompt().toLowerCase();
 
   while (invalidAnswer(runAgainAnswer)) {
-    console.log(invalidAnswerMessage);
+    console.log(`${invalidAnswerWarning} ${invalidAnswerMsg}`);
     runAgainAnswer = readline.prompt().toLowerCase();
   }
 
@@ -81,7 +83,7 @@ while (true) {
 
 function askPromo() {
   console.log('Does your loan include a promotional interest period? ');
-  console.log(`Enter 'y' for yes and 'n' for no.`);
+  console.log(invalidAnswerMsg);
   promoAnswer = readline.prompt().toLowerCase();
 
   validatePromo();
@@ -89,21 +91,21 @@ function askPromo() {
 
 function validatePromo() {
   while (invalidAnswer(promoAnswer)) {
-    console.log(invalidAnswerMessage);
+    console.log(`${invalidAnswerWarning} ${invalidAnswerMsg}`);
     promoAnswer = readline.prompt().toLowerCase();
   }
 }
 
 function getInterestRate() {
   console.log('What is your standard interest rate?');
-  console.log('If 5% write 5, if 10%, write 10');
+  console.log(interestRateMsg);
   standardIntRate = readline.prompt();
   validateStandardInt();
 }
 
 function validateStandardInt() {
   while (invalidIntRate(standardIntRate)) {
-    console.log(invalidNumberMessage);
+    console.log(invalidNumberMsg);
     standardIntRate = readline.prompt();
   }
 }
@@ -126,14 +128,14 @@ function displayMonthlyIntPayment(duration) {
 
 function getPromoRate() {
   console.log('What is the promotional rate?');
-  console.log('If 5% write 5, if 10%, write 10');
+  console.log(interestRateMsg);
   promoRate = readline.prompt();
   validatePromoRate();
 }
 
 function validatePromoRate() {
   while (invalidIntRate(promoRate)) {
-    console.log(invalidNumberMessage);
+    console.log(invalidNumberMsg);
     promoRate = readline.prompt();
   }
 }
@@ -145,12 +147,13 @@ function getPromoDuration() {
 
 function validatePromoDuration(totalMonthDuration) {
   while (invalidNumber(promoDurationMonths)) {
-    console.log('Please enter a positive number of 1 or greater.');
+    console.log(oneOrGreaterMsg);
     promoDurationMonths = readline.prompt();
   }
 
   while (Number(promoDurationMonths) >= totalMonthDuration) {
-    console.log('Promo duration length must be less than the total loan duration. Please enter a positve number of 1 or greater (but less than the full loan duration).');
+    console.log('Promo duration length must be less than the total loan duration.');
+    console.log(`${oneOrGreaterMsg} (but less than the full loan duration).`);
     promoDurationMonths = readline.prompt();
   }
 }
