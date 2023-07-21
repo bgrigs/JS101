@@ -7,11 +7,22 @@ let promoMonthlyPayment;
 let promoRate;
 let promoDurationMonths;
 
-let invalidNumberMsg = 'Please enter a positive number greater than zero.';
-let invalidAnswerWarning = 'Invalid Answer.';
-let invalidAnswerMsg = `Enter 'y' for yes and 'n' for no.`;
-let interestRateMsg = 'If 5% write 5, if 10%, write 10';
-let oneOrGreaterMsg = 'Please enter a positive number of 1 or greater';
+const MESSAGES = {
+  welcome: 'Welcome to the Mortgage Calculator',
+  loanAmountRequest: 'How much is your loan?',
+  loanDurationRequest: 'What is the duration of your loan in MONTHS?',
+  invalidNum: 'Please enter a positive number greater than zero.',
+  promoRequest: 'Does your loan include a promotional interest period?',
+  promoRateRequest: 'What is the promotional rate?',
+  promoPeriodRequest: 'What is the length of the promotional period in MONTHS?',
+  invalidPromoPeriod: 'Promo duration length must be less than the total loan duration.',
+  invalidAnswerWarning: 'Invalid Answer.',
+  yesOrNo: `Enter 'y' for yes and 'n' for no.`,
+  standardIntRequest: 'What is your standard interest rate?',
+  interestRateFormat: 'If 5% write 5, if 10%, write 10',
+  oneOrGreater: 'Please enter a positive number of 1 or greater',
+  anotherCalc: 'Would you like to make another loan calculation?'
+};
 
 function invalidNumber(num) {
   return num.trimStart() === '' ||
@@ -30,25 +41,26 @@ function invalidAnswer(answer) {
 }
 
 while (true) {
-  console.log('Welcome to the Mortgage Calculator');
+  console.log(MESSAGES['welcome']);
 
-  console.log('How much is your loan?');
+  console.log(MESSAGES['loanAmountRequest']);
   let loanAmount = readline.prompt();
 
   while (invalidNumber(loanAmount)) {
-    console.log(invalidNumberMsg);
+    console.log(MESSAGES['invalidNum']);
     loanAmount = readline.prompt();
   }
 
-  console.log('What is the duration of your loan in MONTHS?');
+  console.log(MESSAGES['loanDurationRequest']);
   let monthDuration = readline.prompt();
 
   while (invalidNumber(monthDuration)) {
-    console.log(invalidNumberMsg);
+    console.log(MESSAGES['invalidNum']);
     monthDuration = readline.prompt();
   }
 
   askPromo();
+  validatePromo();
 
   if (promoAnswer === 'n') {
     getInterestRate();
@@ -65,16 +77,16 @@ while (true) {
     displayMonthlyPayAfterPromo(monthDuration);
   }
 
-  console.log('\nWould you like to make another loan calculation?');
-  console.log(invalidAnswerMsg);
-  let runAgainAnswer = readline.prompt().toLowerCase();
+  console.log('\n' + MESSAGES['anotherCalc']);
+  console.log(MESSAGES['yesOrNo']);
+  let runAgain = readline.prompt().toLowerCase();
 
-  while (invalidAnswer(runAgainAnswer)) {
-    console.log(`${invalidAnswerWarning} ${invalidAnswerMsg}`);
-    runAgainAnswer = readline.prompt().toLowerCase();
+  while (invalidAnswer(runAgain)) {
+    console.log(`${MESSAGES['invalidAnswerWarning']} ${MESSAGES['yesOrNo']}`);
+    runAgain = readline.prompt().toLowerCase();
   }
 
-  if (runAgainAnswer === 'n') {
+  if (runAgain === 'n') {
     break;
   } else {
     console.clear();
@@ -82,30 +94,28 @@ while (true) {
 }
 
 function askPromo() {
-  console.log('Does your loan include a promotional interest period? ');
-  console.log(invalidAnswerMsg);
+  console.log(MESSAGES['promoRequest']);
+  console.log(MESSAGES['yesOrNo']);
   promoAnswer = readline.prompt().toLowerCase();
-
-  validatePromo();
 }
 
 function validatePromo() {
   while (invalidAnswer(promoAnswer)) {
-    console.log(`${invalidAnswerWarning} ${invalidAnswerMsg}`);
+    console.log(`${MESSAGES['invalidAnswerWarning']} ${MESSAGES['yesOrNo']}`);
     promoAnswer = readline.prompt().toLowerCase();
   }
 }
 
 function getInterestRate() {
-  console.log('What is your standard interest rate?');
-  console.log(interestRateMsg);
+  console.log(MESSAGES['standardIntRequest']);
+  console.log(MESSAGES['interestRateFormat']);
   standardIntRate = readline.prompt();
   validateStandardInt();
 }
 
 function validateStandardInt() {
   while (invalidIntRate(standardIntRate)) {
-    console.log(invalidNumberMsg);
+    console.log(MESSAGES['invalidNum']);
     standardIntRate = readline.prompt();
   }
 }
@@ -127,33 +137,32 @@ function displayMonthlyIntPayment(duration) {
 }
 
 function getPromoRate() {
-  console.log('What is the promotional rate?');
-  console.log(interestRateMsg);
+  console.log(MESSAGES['promoRateRequest']);
+  console.log(MESSAGES['interestRateFormat']);
   promoRate = readline.prompt();
   validatePromoRate();
 }
 
 function validatePromoRate() {
   while (invalidIntRate(promoRate)) {
-    console.log(invalidNumberMsg);
+    console.log(MESSAGES['invalidNum']);
     promoRate = readline.prompt();
   }
 }
 
 function getPromoDuration() {
-  console.log('What is the length of the promotional period in MONTHS?');
+  console.log(MESSAGES['promoPeriodRequest']);
   promoDurationMonths = readline.prompt();
 }
 
 function validatePromoDuration(totalMonthDuration) {
   while (invalidNumber(promoDurationMonths)) {
-    console.log(oneOrGreaterMsg);
+    console.log(MESSAGES['oneOrGreater']);
     promoDurationMonths = readline.prompt();
   }
 
   while (Number(promoDurationMonths) >= totalMonthDuration) {
-    console.log('Promo duration length must be less than the total loan duration.');
-    console.log(`${oneOrGreaterMsg} (but less than the full loan duration).`);
+    console.log(MESSAGES['invalidPromoPeriod']);
     promoDurationMonths = readline.prompt();
   }
 }
@@ -183,3 +192,4 @@ function displayMonthlyPayAfterPromo(months) {
 // Ideas for improvement:
 // refactor, reduce # of global variables, etc
 // is displayMonthlyPayAfterPromo() correct? does it need to be adjusted to reflect the amount paid during the promo period?
+// after re-reading meterial: while it's usually good for functions to either have side effects OR return a value, when gettings user input it's okay for a function to do both
