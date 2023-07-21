@@ -1,7 +1,6 @@
 const readline = require('readline-sync');
 
 let monthlyPayment;
-let noIntMonthlyPayment;
 let standardIntRate;
 let annualIntRate;
 let monthlyIntRate;
@@ -17,6 +16,12 @@ function invalidNumber(num) {
   return num.trimStart() === '' ||
   Number.isNaN(Number(num)) ||
   Number(num) <= 0;
+}
+
+function invalidIntRate(num) {
+  return num.trimStart() === '' ||
+  Number.isNaN(Number(num)) ||
+  Number(num) < 0;
 }
 
 let invalidNumberMessage = 'Please enter a positive number greater than zero.';
@@ -44,21 +49,7 @@ while (invalidNumber(monthDuration)) {
   monthDuration = readline.prompt();
 }
 
-console.log('Will you be paying interest on this loan?');
-console.log(`Enter 'y' for yes and 'n' for no.`);
-let isInterest = readline.prompt().toLowerCase();
-
-while (invalidAnswer(isInterest)) {
-  console.log(invalidAnswerMessage);
-  isInterest = readline.prompt().toLowerCase();
-}
-
-if (isInterest === 'n') {
-  calcNoInterest();
-  displayNoIntPayment();
-} else if (isInterest === 'y') {
-  askPromo();
-}
+askPromo();
 
 if (promoAnswer === 'n') {
   getInterestRate();
@@ -69,14 +60,6 @@ if (promoAnswer === 'n') {
   calcPromo();
   displayMonthlyPromoPayment();
   displayMonthlyPayAfterPromo();
-}
-
-function calcNoInterest() {
-  noIntMonthlyPayment = (Number(loanAmount) / Number(monthDuration)).toFixed(2);
-}
-
-function displayNoIntPayment() {
-  console.log(`You will owe $${noIntMonthlyPayment} for ${monthDuration} months.`);
 }
 
 function askPromo() {
@@ -98,7 +81,7 @@ function getInterestRate() {
 }
 
 function validateStandardInt() {
-  while (invalidNumber(standardIntRate)) {
+  while (invalidIntRate(standardIntRate)) {
     console.log(invalidNumberMessage);
     standardIntRate = readline.prompt();
   }
@@ -110,8 +93,12 @@ function calcInterest() {
   annualIntRate = Number(standardIntRate) / 100;
   monthlyIntRate = annualIntRate / 12;
 
-  monthlyPayment = Number(loanAmount) * (monthlyIntRate /
-  (1 - Math.pow((1 + monthlyIntRate), (-Number(monthDuration)))));
+  if (Number(standardIntRate) === 0) {
+    monthlyPayment = Number(loanAmount) / Number(monthDuration);
+  } else {
+    monthlyPayment = Number(loanAmount) * (monthlyIntRate /
+    (1 - Math.pow((1 + monthlyIntRate), (-Number(monthDuration)))));
+  }
 }
 
 function displayMonthlyIntPayment() {
@@ -125,14 +112,8 @@ function getPromoRate() {
   validatePromoRate();
 }
 
-function invalidPromoRate(num) {
-  return num.trimStart() === '' ||
-  Number.isNaN(Number(num)) ||
-  Number(num) < 0;
-}
-
 function validatePromoRate() {
-  while (invalidPromoRate(promoRate)) {
+  while (invalidIntRate(promoRate)) {
     console.log(invalidNumberMessage);
     promoRate = readline.prompt();
   }
