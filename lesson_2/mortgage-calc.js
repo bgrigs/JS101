@@ -2,12 +2,10 @@ const readline = require('readline-sync');
 
 let monthlyPayment;
 let standardIntRate;
-let monthlyIntRate;
 
 let promoAnswer;
 let promoMonthlyPayment;
 let promoRate;
-let promoMonthlyIntRate;
 let promoDurationMonths;
 
 function invalidNumber(num) {
@@ -108,7 +106,7 @@ function validateStandardInt() {
 
 function calcInterest(loan, months) {
   let annualIntRate = Number(standardIntRate) / 100;
-  monthlyIntRate = annualIntRate / 12;
+  let monthlyIntRate = annualIntRate / 12;
 
   if (Number(standardIntRate) === 0) {
     monthlyPayment = Number(loan) / Number(months);
@@ -147,15 +145,15 @@ function validatePromoDuration(totalMonthDuration) {
     promoDurationMonths = readline.prompt();
   }
 
-  while (Number(promoDurationMonths) > totalMonthDuration) {
-    console.log('Promo duration length cannot be greater than the total loan duration. Please enter a positve number of 1 or greater (but less than the full loan duration).');
+  while (Number(promoDurationMonths) >= totalMonthDuration) {
+    console.log('Promo duration length must be less than the total loan duration. Please enter a positve number of 1 or greater (but less than the full loan duration).');
     promoDurationMonths = readline.prompt();
   }
 }
 
 function calcPromo(loan, months) {
   let promoAnnualIntRate = Number(promoRate) / 100;
-  promoMonthlyIntRate = promoAnnualIntRate / 12;
+  let promoMonthlyIntRate = promoAnnualIntRate / 12;
 
   let promoLoanAmount = (Number(loan) / Number(months)) * Number(promoDurationMonths);
 
