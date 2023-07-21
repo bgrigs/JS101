@@ -36,14 +36,12 @@ while (invalidNumber(loanAmount)) {
   loanAmount = readline.prompt();
 }
 
-console.log('What is the duration of your loan in YEARS?');
-let yearDuration = readline.prompt();
-let monthDuration = Number(yearDuration) * 12;
+console.log('What is the duration of your loan in MONTHS?');
+let monthDuration = readline.prompt();
 
-while (invalidNumber(yearDuration)) {
+while (invalidNumber(monthDuration)) {
   console.log(invalidNumberMessage);
-  yearDuration = readline.prompt();
-  monthDuration = Number(yearDuration) * 12;
+  monthDuration = readline.prompt();
 }
 
 console.log('Will you be paying interest on this loan?');
@@ -74,7 +72,7 @@ if (promoAnswer === 'n') {
 }
 
 function calcNoInterest() {
-  noIntMonthlyPayment = (Number(loanAmount) / monthDuration).toFixed(2);
+  noIntMonthlyPayment = (Number(loanAmount) / Number(monthDuration)).toFixed(2);
 }
 
 function displayNoIntPayment() {
@@ -113,7 +111,7 @@ function calcInterest() {
   monthlyIntRate = annualIntRate / 12;
 
   monthlyPayment = Number(loanAmount) * (monthlyIntRate /
-  (1 - Math.pow((1 + monthlyIntRate), (-monthDuration))));
+  (1 - Math.pow((1 + monthlyIntRate), (-Number(monthDuration)))));
 }
 
 function displayMonthlyIntPayment() {
@@ -147,12 +145,8 @@ function getPromoDuration() {
   validatePromoDuration();
 }
 
-function invalidPromoDuration(num) {
-  return Number(num) <= 0;
-}
-
 function validatePromoDuration() {
-  while (invalidPromoDuration(promoDurationMonths) || invalidNumber(promoDurationMonths)) {
+  while (invalidNumber(promoDurationMonths)) {
     console.log('Please enter a positive number of 1 or greater.');
     promoDurationMonths = readline.prompt();
   }
@@ -162,7 +156,7 @@ function calcPromo() {
   promoAnnualIntRate = Number(promoRate) / 100;
   promoMonthlyIntRate = promoAnnualIntRate / 12;
 
-  let promoLoanAmount = (Number(loanAmount) / monthDuration) * Number(promoDurationMonths);
+  let promoLoanAmount = (Number(loanAmount) / Number(monthDuration)) * Number(promoDurationMonths);
 
   if (Number(promoRate) === 0) {
     promoMonthlyPayment = Number(promoLoanAmount) / Number(promoDurationMonths);
@@ -179,7 +173,7 @@ function displayMonthlyPromoPayment() {
 }
 
 function displayMonthlyPayAfterPromo() {
-  console.log(`After the promotional period, you will owe $${monthlyPayment.toFixed(2)} for ${monthDuration - promoDurationMonths} months.`);
+  console.log(`After the promotional period, you will owe $${monthlyPayment.toFixed(2)} for ${Number(monthDuration) - promoDurationMonths} months.`);
 }
 
 // Ideas for improvement:
