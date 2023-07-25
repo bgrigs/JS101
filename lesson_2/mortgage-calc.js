@@ -36,7 +36,8 @@ while (true) {
   } else if (promoAnswer === 'y') {
     let promoRate = getPromoRate();
     let promoDuration = getPromoDuration(loanDuration);
-    let promoPayment = calcPromoPayment(loanAmount, loanDuration, promoRate, promoDuration);
+    let promoPayment =
+      calcPromoPayment(loanAmount, loanDuration, promoRate, promoDuration);
     displayPromoPayment(promoPayment, promoDuration);
     displayPaymentAfterPromo(standardPayment, loanDuration, promoDuration);
   }
@@ -195,7 +196,3 @@ function displayPromoPayment(payment, promoMonths) {
 function displayPaymentAfterPromo(payment, totalMonths, promoMonths) {
   console.log(`After the promotional period, you will owe $${payment.toFixed(2)} for ${totalMonths - promoMonths} month(s).`);
 }
-
-// Questions
-// is displayPaymentAfterPromo() mathmatically correct? does it need to be adjusted to reflect the amount paid during the promo period?
-// are calcPayment() and calcPromoPayment() too long?
