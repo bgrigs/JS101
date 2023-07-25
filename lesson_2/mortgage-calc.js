@@ -37,7 +37,7 @@ while (true) {
     let promoRate = getPromoRate();
     let promoDuration = getPromoDuration(loanDuration);
     let promoPayment = calcPromoPayment(loanAmount, loanDuration, promoRate, promoDuration);
-    displayPromoPayment(promoDuration, promoPayment);
+    displayPromoPayment(promoPayment, promoDuration);
     displayPaymentAfterPromo(standardPayment, loanDuration, promoDuration);
   }
 
@@ -123,7 +123,6 @@ function getInterestRate() {
   return standardIntRate;
 }
 
-
 function calcPayment(loan, months, intRate) {
   let annualIntRate = Number(intRate) / 100;
   let monthlyIntRate = annualIntRate / 12;
@@ -160,13 +159,13 @@ function getPromoDuration(totalDuration) {
   console.log(MESSAGES['promoPeriodRequest']);
   let promoDuration = readline.prompt();
 
-  while (invalidNumber(promoDuration)) {
-    console.log(MESSAGES['oneOrGreater']);
+  while (Number(promoDuration) >= totalDuration) {
+    console.log(MESSAGES['invalidPromoPeriod']);
     promoDuration = readline.prompt();
   }
 
-  while (Number(promoDuration) >= totalDuration) {
-    console.log(MESSAGES['invalidPromoPeriod']);
+  while (invalidNumber(promoDuration)) {
+    console.log(MESSAGES['oneOrGreater']);
     promoDuration = readline.prompt();
   }
 
@@ -189,7 +188,7 @@ function calcPromoPayment(loan, totalMonths, intRate, promoMonths) {
   return promoPayment;
 }
 
-function displayPromoPayment(promoMonths, payment) {
+function displayPromoPayment(payment, promoMonths) {
   console.log(`During your promotional period, you will owe $${payment.toFixed(2)} for ${promoMonths} month(s).`);
 }
 
@@ -197,6 +196,6 @@ function displayPaymentAfterPromo(payment, totalMonths, promoMonths) {
   console.log(`After the promotional period, you will owe $${payment.toFixed(2)} for ${totalMonths - promoMonths} month(s).`);
 }
 
-// Questions/Ideas
+// Questions
 // is displayPaymentAfterPromo() mathmatically correct? does it need to be adjusted to reflect the amount paid during the promo period?
-// make it so that the standard int rate has to be greater than 0?
+// are calcPayment() and calcPromoPayment() too long?
