@@ -123,16 +123,16 @@ function getInterestRate() {
   return standardIntRate;
 }
 
-function calcPayment(loan, months, intRate) {
+function calcPayment(loan, duration, intRate) {
   let annualIntRate = Number(intRate) / 100;
   let monthlyIntRate = annualIntRate / 12;
   let payment;
 
   if (Number(intRate) === 0) {
-    payment = loan / months;
+    payment = loan / duration;
   } else {
     payment = loan * (monthlyIntRate /
-    (1 - Math.pow((1 + monthlyIntRate), (-months))));
+    (1 - Math.pow((1 + monthlyIntRate), (-duration))));
   }
 
   return payment;
