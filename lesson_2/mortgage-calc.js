@@ -9,7 +9,7 @@ const MESSAGES = {
   promoRateRequest: 'What is the promotional rate?',
   promoPeriodRequest: 'What is the length of the promotional period in MONTHS?',
   invalidPromoPeriod: 'Promo duration length must be less than the total loan duration.',
-  invalidAnswerWarning: 'Invalid Answer.',
+  invalidYesOrNoWarning: 'Invalid Answer.',
   yesOrNo: `Enter 'y' for yes and 'n' for no.`,
   standardIntRequest: 'What is your standard interest rate?',
   interestRateFormat: 'If 5% write 5, if 10%, write 10',
@@ -19,6 +19,7 @@ const MESSAGES = {
 };
 
 while (true) {
+  console.clear();
   console.log(MESSAGES['welcome']);
 
   let loanAmount = getLoanAmount();
@@ -42,19 +43,10 @@ while (true) {
     displayPaymentAfterPromo(standardPayment, loanDuration, promoDuration);
   }
 
-  console.log('\n' + MESSAGES['anotherCalc']);
-  console.log(MESSAGES['yesOrNo']);
-  let runAgain = readline.prompt().toLowerCase();
-
-  while (invalidAnswer(runAgain)) {
-    console.log(`${MESSAGES['invalidAnswerWarning']} ${MESSAGES['yesOrNo']}`);
-    runAgain = readline.prompt().toLowerCase();
-  }
+  let runAgain = restartProgram();
 
   if (runAgain === 'n') {
     break;
-  } else {
-    console.clear();
   }
 }
 
@@ -70,7 +62,7 @@ function invalidIntRate(num) {
   Number(num) < 0;
 }
 
-function invalidAnswer(answer) {
+function invalidYesOrNo(answer) {
   return answer !== 'y' && answer !== 'n';
 }
 
@@ -103,8 +95,8 @@ function askPromo() {
   console.log(MESSAGES['yesOrNo']);
   let promoAnswer = readline.prompt().toLowerCase();
 
-  while (invalidAnswer(promoAnswer)) {
-    console.log(`${MESSAGES['invalidAnswerWarning']} ${MESSAGES['yesOrNo']}`);
+  while (invalidYesOrNo(promoAnswer)) {
+    console.log(`${MESSAGES['invalidYesOrNoWarning']} ${MESSAGES['yesOrNo']}`);
     promoAnswer = readline.prompt().toLowerCase();
   }
 
@@ -170,7 +162,7 @@ function getPromoDuration(totalDuration) {
     promoDuration = readline.prompt();
   }
 
-  return promoDuration;
+  return Number(promoDuration);
 }
 
 function calcPromoPayment(loan, totalMonths, intRate, promoMonths) {
@@ -195,4 +187,18 @@ function displayPromoPayment(payment, promoMonths) {
 
 function displayPaymentAfterPromo(payment, totalMonths, promoMonths) {
   console.log(`After the promotional period, you will owe $${payment.toFixed(2)} for ${totalMonths - promoMonths} month(s).`);
+}
+
+function restartProgram() {
+  console.log('\n' + MESSAGES['anotherCalc']);
+  console.log(MESSAGES['yesOrNo']);
+
+  let runAgain = readline.prompt().toLowerCase();
+
+  while (invalidYesOrNo(runAgain)) {
+    console.log(`${MESSAGES['invalidYesOrNoWarning']} ${MESSAGES['yesOrNo']}`);
+    runAgain = readline.prompt().toLowerCase();
+  }
+
+  return runAgain;
 }
